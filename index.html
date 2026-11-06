@@ -5,48 +5,121 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simple Calculator</title>
   <style>
-    body { font-family: sans-serif; max-width: 400px; margin: 40px auto; padding: 16px; }
-    input { display: block; margin: 8px 0 16px; }
+    :root {
+      --blue: #2459cc;
+      --ink: #202b40;
+      --border: #d7dfea;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 48px 20px;
+      display: grid;
+      place-items: center;
+      font-family: 'Trebuchet MS', sans-serif;
+      color: var(--ink);
+      background: linear-gradient(135deg, #edf3ff, #f8fafc 60%, #eef5f5);
+    }
+    .calculator {
+      width: 100%;
+      max-width: 460px;
+      padding: 32px;
+      background: white;
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--blue);
+      border-radius: 8px;
+      box-shadow: 0 16px 48px #202b4010;
+    }
+    h1 { margin: 0 0 28px; font-size: 26px; font-weight: 700; }
+    label { display: block; margin: 20px 0 8px; font-size: 14px; font-weight: 700; }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: #fcfdff;
+      color: var(--ink);
+      font: inherit;
+    }
+    .operations { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 24px 0; }
+    button {
+      min-height: 44px;
+      padding: 12px 8px;
+      border: 1px solid var(--blue);
+      border-radius: 5px;
+      background: var(--blue);
+      color: white;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 150ms;
+    }
+    button:hover { background: #1946a7; }
+    button:active { background: #123780; }
+    input:focus-visible, button:focus-visible { outline: 3px solid #8db4ff; outline-offset: 3px; }
+    #result {
+      margin: 0;
+      padding: 20px 0 0;
+      border-top: 1px solid var(--border);
+      color: #17439d;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    @media (max-width: 380px) {
+      body { padding: 24px 16px; }
+      .calculator { padding: 24px; }
+      h1 { font-size: 24px; }
+    }
   </style>
 </head>
 <body>
+  <main class="calculator">
   <h1>Simple Calculator</h1>
-  <label for="number1">Enter Number 1</label>
-  <input type="number" id="number1" step="any" required>
-  <label for="number2">Enter Number 2</label>
-  <input type="number" id="number2" step="any" required>
 
-  <button type="button" onclick="calculate('+')">Add</button>
-  <button type="button" onclick="calculate('-')">Subtract</button>
-  <button type="button" onclick="calculate('*')">Multiply</button>
-  <button type="button" onclick="calculate('/')">Divide</button>
+  <label for="number1">Number 1</label>
+  <input id="number1" type="number" step="any">
 
-  <p id="result" aria-live="polite">Result: </p>
+  <label for="number2">Number 2</label>
+  <input id="number2" type="number" step="any">
+
+  <div class="operations">
+    <button onclick="calculate('add')">Add</button>
+    <button onclick="calculate('subtract')">Subtract</button>
+    <button onclick="calculate('multiply')">Multiply</button>
+    <button onclick="calculate('divide')">Divide</button>
+  </div>
+
+  <p id="result" aria-live="polite">Result: -</p>
+  </main>
 
   <script>
     function calculate(operation) {
-      const input1 = document.getElementById('number1');
-      const input2 = document.getElementById('number2');
+      const firstInput = document.getElementById('number1');
+      const secondInput = document.getElementById('number2');
       const result = document.getElementById('result');
+      const number1 = firstInput.valueAsNumber;
+      const number2 = secondInput.valueAsNumber;
 
-      if (!input1.checkValidity() || !input2.checkValidity()) {
-        result.textContent = 'Please enter two valid numbers.';
+      if (!Number.isFinite(number1) || !Number.isFinite(number2)) {
+        result.textContent = 'Result: Please enter both numbers.';
         return;
       }
 
-      const number1 = Number(input1.value);
-      const number2 = Number(input2.value);
       let answer;
 
-      if (operation === '+') {
+      if (operation === 'add') {
         answer = number1 + number2;
-      } else if (operation === '-') {
+      } else if (operation === 'subtract') {
         answer = number1 - number2;
-      } else if (operation === '*') {
+      } else if (operation === 'multiply') {
         answer = number1 * number2;
-      } else if (operation === '/') {
+      } else if (operation === 'divide') {
         if (number2 === 0) {
-          result.textContent = 'Cannot divide by zero.';
+          result.textContent = 'Result: Cannot divide by zero.';
           return;
         }
         answer = number1 / number2;
